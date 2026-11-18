@@ -13,7 +13,12 @@ services:
     # rootDir porque a raiz do repositorio e o projeto Android: o backend vive
     # na subpasta Backend/, e o Render precisa buildar de dentro dela.
     rootDir: Backend
-    buildCommand: npm ci && npm run build
+    # --include=dev e OBRIGATORIO: o Render roda com NODE_ENV=production, e
+    # nesse modo o npm ci pula as devDependencies. O typescript e os @types
+    # vivem la, entao sem isto o tsc compila sem saber o que e 'process' nem
+    # 'express' e o build quebra com dezenas de erros que parecem do codigo.
+    # So o BUILD precisa delas; npm start roda o dist/ ja compilado.
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm start
     healthCheckPath: /health
     envVars:
