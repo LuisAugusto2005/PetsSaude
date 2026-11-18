@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older that API 31
-   See https://developer.android.com/about/versions/12/backup-restore
+   Regras de backup para Android 11 e anteriores (API < 31).
+
+   O que fica de fora: "vitalwatch-sessao.xml", que guarda os tokens do
+   backend. Token de acesso em backup de nuvem sai do aparelho e pode ser
+   restaurado em outro, e isso aqui da acesso a dado de saude de paciente.
+   Quem restaura o app faz login de novo, que e o certo.
+
+   O resto das preferencias (endereco do gateway, servidor e topico do ntfy)
+   continua no backup: e configuracao chata de redigitar e nao e segredo.
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <include domain="sharedpref" path="." />
+    <exclude domain="sharedpref" path="vitalwatch-sessao.xml" />
 </full-backup-content>

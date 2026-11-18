@@ -9,6 +9,18 @@ data class AppSettings(
     val ntfyServer: String = "https://ntfy.sh",
     // Mesmo tópico configurado no portal do gateway (na versão simulada, o ntfy também é simulado)
     val ntfyTopic: String = if (BuildConfig.SIMULADO) "vitalwatch-simulado" else "",
+    /**
+     * Endereço do backend. VAZIO = desligado, e é o padrão.
+     *
+     * Vazio não é "não configurado ainda": é o app funcionando como sempre,
+     * só com o gateway na rede local. Quem não tem servidor continua usando
+     * tudo o que já usava.
+     *
+     * Para desenvolvimento: "http://10.0.2.2:3000" no emulador (10.0.2.2 é o
+     * atalho do emulador para o localhost da máquina) e o IP da máquina na
+     * rede, tipo "http://192.168.68.75:3000", no celular de verdade.
+     */
+    val backendUrl: String = "",
 )
 
 class SettingsStore(context: Context) {
@@ -20,6 +32,7 @@ class SettingsStore(context: Context) {
             gatewayUrl = prefs.getString(KEY_URL, null) ?: padrao.gatewayUrl,
             ntfyServer = prefs.getString(KEY_NTFY_SERVER, null) ?: padrao.ntfyServer,
             ntfyTopic = prefs.getString(KEY_NTFY_TOPIC, null) ?: padrao.ntfyTopic,
+            backendUrl = prefs.getString(KEY_BACKEND_URL, null) ?: padrao.backendUrl,
         )
     }
 
@@ -28,6 +41,7 @@ class SettingsStore(context: Context) {
             .putString(KEY_URL, settings.gatewayUrl)
             .putString(KEY_NTFY_SERVER, settings.ntfyServer)
             .putString(KEY_NTFY_TOPIC, settings.ntfyTopic)
+            .putString(KEY_BACKEND_URL, settings.backendUrl)
             .apply()
     }
 
@@ -35,5 +49,6 @@ class SettingsStore(context: Context) {
         const val KEY_URL = "gateway_url"
         const val KEY_NTFY_SERVER = "ntfy_server"
         const val KEY_NTFY_TOPIC = "ntfy_topic"
+        const val KEY_BACKEND_URL = "backend_url"
     }
 }

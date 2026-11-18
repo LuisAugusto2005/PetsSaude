@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mypet.data.GatewayClient
 import com.example.mypet.ui.AlertsScreen
+import com.example.mypet.ui.BackendScreen
 import com.example.mypet.ui.PanelScreen
 import com.example.mypet.ui.SettingsScreen
 import com.example.mypet.ui.SimulatorScreen
@@ -57,6 +59,9 @@ class MainActivity : ComponentActivity() {
 private enum class Aba(val titulo: String, val icone: ImageVector) {
     PULSEIRA("Pulseira", Icons.Default.Favorite),
     ALERTAS("Alertas", Icons.Default.Notifications),
+    // O que só existe com servidor: histórico que não se perde, paciente do
+    // cadastro, e quem atendeu cada alerta. Tempo real continua em PULSEIRA.
+    SERVIDOR("Servidor", Icons.AutoMirrored.Filled.List),
     PAINEL("Painel", Icons.Default.Home),
     SIMULADOR("Simulador", Icons.Default.Build),
     CONFIG("Config.", Icons.Default.Settings),
@@ -110,6 +115,7 @@ fun VitalWatchApp(vm: VitalWatchViewModel = viewModel()) {
                     abrirConfig = { aba = Aba.CONFIG },
                 )
                 Aba.ALERTAS -> AlertsScreen(vm)
+                Aba.SERVIDOR -> BackendScreen(vm, abrirConfig = { aba = Aba.CONFIG })
                 Aba.PAINEL -> PanelScreen(GatewayClient.normalizar(vm.settings.gatewayUrl) + "/painel")
                 Aba.SIMULADOR -> SimulatorScreen()
                 Aba.CONFIG -> SettingsScreen(vm)

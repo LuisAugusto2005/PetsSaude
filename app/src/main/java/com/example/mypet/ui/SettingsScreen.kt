@@ -47,6 +47,7 @@ fun SettingsScreen(vm: VitalWatchViewModel) {
     var url by rememberSaveable(s) { mutableStateOf(s.gatewayUrl) }
     var servidor by rememberSaveable(s) { mutableStateOf(s.ntfyServer) }
     var topico by rememberSaveable(s) { mutableStateOf(s.ntfyTopic) }
+    var backend by rememberSaveable(s) { mutableStateOf(s.backendUrl) }
     var nivelBeep by rememberSaveable { mutableIntStateOf(2) }
 
     Column(
@@ -127,6 +128,7 @@ fun SettingsScreen(vm: VitalWatchViewModel) {
                         gatewayUrl = url.trim().ifEmpty { padrao.gatewayUrl },
                         ntfyServer = servidor.trim().ifEmpty { padrao.ntfyServer },
                         ntfyTopic = topico.trim(),
+                        backendUrl = backend.trim(),
                     )
                 )
             },
@@ -137,6 +139,33 @@ fun SettingsScreen(vm: VitalWatchViewModel) {
         }
 
         HorizontalDivider()
+
+        Text("Servidor (opcional)", style = MaterialTheme.typography.titleLarge)
+        Text(
+            "Deixe vazio para usar o app só com o gateway na rede local, como sempre. " +
+                "Com um servidor configurado, entram o histórico que não se perde ao fechar o app, " +
+                "o paciente vindo do cadastro e o registro de quem atendeu cada alerta.",
+            style = MaterialTheme.typography.bodySmall,
+        )
+        OutlinedTextField(
+            value = backend,
+            onValueChange = { backend = it },
+            label = { Text("Endereço do servidor") },
+            placeholder = { Text("vazio = desligado") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        // Atalhos de desenvolvimento: "localhost" dentro do celular é o próprio
+        // celular, não a máquina. No emulador o atalho para o host é 10.0.2.2;
+        // no aparelho de verdade é o IP da máquina na rede.
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = { backend = "http://10.0.2.2:3000" }) { Text("Emulador") }
+            OutlinedButton(onClick = { backend = "http://192.168.68.75:3000" }) { Text("Rede local") }
+            if (backend.isNotBlank()) {
+                OutlinedButton(onClick = { backend = "" }) { Text("Desligar") }
+            }
+        }
 
         Text("Testes", style = MaterialTheme.typography.titleLarge)
         Text(

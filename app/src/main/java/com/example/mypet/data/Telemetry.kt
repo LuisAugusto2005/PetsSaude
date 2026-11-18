@@ -25,6 +25,15 @@ data class Telemetria(
     val sensor: String,
     val link: String,
     val gateway: InfoGateway?, // só quando vem do gateway
+    /**
+     * O JSON exatamente como chegou.
+     *
+     * Guardado para poder REPASSAR o frame ao backend sem reinterpretar: este
+     * app lê só os campos de que precisa, e reconstruir o documento a partir
+     * deles perderia o que uma versão nova de firmware acrescentar. O servidor
+     * precisa do mesmo documento vindo da pulseira ou vindo daqui.
+     */
+    val cru: String = "",
 ) {
     data class Paciente(val nome: String, val idade: Int?, val quarto: String, val contato: String)
     data class Panico(val ativo: Boolean, val contagem: Int)
@@ -113,6 +122,9 @@ data class Telemetria(
                         ageMs = it.optLong("age_ms"),
                     )
                 },
+                // toString do JSONObject devolve tudo o que foi parseado,
+                // inclusive os campos que este app ignora.
+                cru = j.toString(),
             )
         }
     }

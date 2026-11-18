@@ -1,0 +1,47 @@
+# Blueprint do Render. Crie o servico apontando para este repositorio.
+#
+# ATENCAO: o plano gratuito HIBERNA depois de 15 minutos sem trafego, e a
+# primeira requisicao depois disso leva cerca de 50 segundos. Para a etapa de
+# notificacao de queda isso e inaceitavel; ou se passa para um plano pago, ou
+# se mantem um cron batendo em /health.
+services:
+  - type: web
+    name: vitalwatch-api
+    runtime: node
+    plan: free
+    region: oregon
+    # rootDir porque a raiz do repositorio e o projeto Android: o backend vive
+    # na subpasta Backend/, e o Render precisa buildar de dentro dela.
+    rootDir: Backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: '22'
+      # Cole a string de conexao do Atlas no painel. Nao versione isto.
+      - key: MONGODB_URI
+        sync: false
+      # O Render gera valores aleatorios no primeiro deploy.
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: ACCESS_TOKEN_TTL
+        value: 15m
+      - key: REFRESH_TOKEN_TTL
+        value: 30d
+      # Troque pelo dominio do app quando houver um. '*' so serve em dev.
+      - key: CORS_ORIGINS
+        value: '*'
+      - key: LOG_LEVEL
+        value: info
+      # Primeiro deploy: cadastre-se por POST /api/auth/register com
+      # roles: ['responsavel'], cole o e-mail aqui no painel (o Render
+      # reinicia) e a conta e promovida a admin no boot. Sem isto o sistema
+      # nasce travado: conta de enfermagem e 'pending' e nao ha quem aprove.
+      # Pode ser removida depois que houver um admin.
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        sync: false
