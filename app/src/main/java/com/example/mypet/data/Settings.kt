@@ -20,7 +20,13 @@ data class AppSettings(
      * atalho do emulador para o localhost da máquina) e o IP da máquina na
      * rede, tipo "http://192.168.68.75:3000", no celular de verdade.
      */
-    val backendUrl: String = "",
+    /**
+     * Servidor em produção no Render. Vazio desliga o backend: o app continua
+     * funcionando só com o gateway na rede local, que é o uso offline.
+     *
+     * Só vale para instalação nova — quem já salvou um endereço mantém o dele.
+     */
+    val backendUrl: String = "https://vitalwatchserver.onrender.com",
 )
 
 class SettingsStore(context: Context) {

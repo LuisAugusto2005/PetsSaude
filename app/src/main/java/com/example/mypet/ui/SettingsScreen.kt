@@ -156,11 +156,21 @@ fun SettingsScreen(vm: VitalWatchViewModel) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
             modifier = Modifier.fillMaxWidth(),
         )
-        // Atalhos de desenvolvimento: "localhost" dentro do celular é o próprio
-        // celular, não a máquina. No emulador o atalho para o host é 10.0.2.2;
-        // no aparelho de verdade é o IP da máquina na rede.
+        // Atalhos. "Render" é o servidor em produção e funciona de qualquer
+        // rede. Os outros dois são de desenvolvimento: "localhost" dentro do
+        // celular é o próprio celular, não a máquina — no emulador o atalho
+        // para o host é 10.0.2.2, e no aparelho de verdade é o IP da máquina
+        // na rede, que muda de lugar para lugar.
+        //
+        // Em duas linhas porque quatro botões não cabem na largura de um
+        // celular.
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = { backend = "https://vitalwatchserver.onrender.com" }) {
+                Text("Render")
+            }
             OutlinedButton(onClick = { backend = "http://10.0.2.2:3000" }) { Text("Emulador") }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { backend = "http://192.168.68.75:3000" }) { Text("Rede local") }
             if (backend.isNotBlank()) {
                 OutlinedButton(onClick = { backend = "" }) { Text("Desligar") }
